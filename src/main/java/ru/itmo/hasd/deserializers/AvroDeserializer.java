@@ -7,8 +7,9 @@ import org.apache.avro.reflect.ReflectDatumReader;
 import java.io.File;
 import java.io.IOException;
 
-public class AvroDeserializer<T> {
+public class AvroDeserializer<T> implements Deserializer<T> {
 
+    @Override
     public T deserialize(Class<T> clazz, File file) throws IOException {
         DatumReader<T> reader = new ReflectDatumReader<T>(clazz);
 

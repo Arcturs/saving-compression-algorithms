@@ -14,6 +14,8 @@ repositories {
 dependencies {
     implementation 'com.google.protobuf:protobuf-java:4.28.1'
     implementation 'com.google.protobuf:protobuf-java-util:4.28.1'
+    implementation 'io.protostuff:protostuff-core:1.8.0'
+    implementation 'io.protostuff:protostuff-runtime:1.8.0'
     implementation 'org.apache.avro:avro:1.12.0'
     compileOnly 'org.projectlombok:lombok:1.18.34'
 }
@@ -21,4 +23,4 @@ dependencies {
 group = 'ru.itmo.hasd'
 version = '1.0-SNAPSHOT'
 description = 'saving-compression-algorithms'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_17

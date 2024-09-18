@@ -9,8 +9,9 @@ import org.apache.avro.reflect.ReflectDatumWriter;
 import java.io.File;
 import java.io.IOException;
 
-public class AvroSerializer<T> {
+public class AvroSerializer<T> implements Serializer<T> {
 
+    @Override
     public void serialize(Class<T> clazz, T value, File file) throws IOException {
         var schema = ReflectData.get().getSchema(clazz);
         DatumWriter<T> writer = new ReflectDatumWriter<T>(schema);

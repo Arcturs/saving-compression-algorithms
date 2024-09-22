@@ -20,6 +20,7 @@ public class AvroSerializer<T> implements Serializer<T> {
             out.setCodec(CodecFactory.deflateCodec(9))
                     .create(schema, file);
             out.append(value);
+            out.flush();
         }
     }
 

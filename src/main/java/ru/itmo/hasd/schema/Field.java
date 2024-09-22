@@ -3,15 +3,15 @@ package ru.itmo.hasd.schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@Data
 @Accessors(chain = true)
-public class Field {
+public record Field(
 
-    private String name;
+        String name,
+        FieldType type,
 
-    private FieldType type;
+        // TODO: think
+        String value
 
-    // TODO: think
-    private String value;
+) {
 
 }

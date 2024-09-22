@@ -30,10 +30,7 @@ public class CustomSerializer<T> implements Serializer<T> {
                         Arrays.stream(clazz.getFields())
                                 .map(field -> {
                                     field.setAccessible(true);
-                                    return new Field()
-                                            .setName(field.getName())
-                                            .setType(FieldType.fromField(field))
-                                            .setValue(getFieldValue(field, value));
+                                    return new Field(field.getName(), FieldType.fromField(field), getFieldValue(field, value));
                                 })
                                 .toList());
     }

@@ -54,4 +54,11 @@ public enum FieldType {
         return SCHEMA;
     }
 
+    public static FieldType fromName(String name) {
+        return Arrays.stream(FieldType.values())
+                .filter(type -> type.name().equals(name))
+                .findFirst()
+                .orElse(SCHEMA);
+    }
+
 }

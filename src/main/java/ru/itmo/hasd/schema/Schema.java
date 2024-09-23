@@ -1,16 +1,34 @@
 package ru.itmo.hasd.schema;
 
-import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.List;
 
-@Data
 @Accessors(chain = true)
-public class Schema {
+public record Schema(String name, List<Field> fields) {
 
-    private String name;
+    @Override
+    public String toString() {
+        var sb = new StringBuilder("class ")
+                .append(name)
+                .append(";\n");
 
-    private List<Field> fields;
+        sb.append("fields [\n");
+        for (var field : fields) {
+            sb.append(field.toString())
+                    .append("\n");
+        }
+        sb.append("];");
+        return sb.toString();
+    }
+
+    /* Note: Схема сообщения
+     *
+     * class ???;
+     * fields [
+     *  field %s, type %s, value %s;
+     *  ...
+     * ];
+     */
 
 }

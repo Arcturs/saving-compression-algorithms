@@ -17,22 +17,23 @@ public class CustomSerializer<T> implements Serializer<T> {
         var schema = getSchema(clazz, value);
 
         try (var out = new FileOutputStream(file)) {
-            // TODO: think
             out.write(schema.toString().getBytes(StandardCharsets.UTF_8));
             out.flush();
         }
     }
 
     private Schema getSchema(Class<T> clazz, T value) {
-        return new Schema()
-                .setName(clazz.getSimpleName())
-                .setFields(
-                        Arrays.stream(clazz.getFields())
-                                .map(field -> {
-                                    field.setAccessible(true);
-                                    return new Field(field.getName(), FieldType.fromField(field), getFieldValue(field, value));
-                                })
-                                .toList());
+        return new Schema(
+                clazz.getSimpleName(),
+                Arrays.stream(clazz.getFields())
+                        .map(field -> {
+                            field.setAccessible(true);
+                            return new Field(
+                                    field.getName(),
+                                    FieldType.fromField(field),
+                                    getFieldValue(field, value));
+                        })
+                        .toList());
     }
 
     private String getFieldValue(java.lang.reflect.Field field, T value) {

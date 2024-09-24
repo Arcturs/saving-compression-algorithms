@@ -33,7 +33,8 @@ public class CustomSerializerTest {
                 .setSalary(87000.50)
                 .setCash(678097.09F)
                 .setName("Anna")
-                .setGender('f');
+                .setGender('f')
+                .setEmployed(false);
 
         serializer.serialize(Person.class, person, testFile);
 
@@ -48,6 +49,7 @@ public class CustomSerializerTest {
                 field cash, type FLOAT, value 678097.06;
                 field name, type STRING, value Anna;
                 field gender, type CHAR, value f;
+                field isEmployed, type BOOL, value false;
                 """,
                 result
         );

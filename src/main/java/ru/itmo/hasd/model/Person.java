@@ -7,11 +7,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Person {
 
-    private Long id;
-    private Integer age;
-    private Double salary;
-    private Float cash;
+    private long id;
+    private int age;
+    private double salary;
+    private float cash;
     private String name;
-    private Character gender;
+    private char gender;
+    private boolean isEmployed;
 
 }

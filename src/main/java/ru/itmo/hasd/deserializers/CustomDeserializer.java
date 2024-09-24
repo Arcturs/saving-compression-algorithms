@@ -8,22 +8,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.EnumSet;
-
-import static ru.itmo.hasd.schema.FieldType.CHAR;
-import static ru.itmo.hasd.schema.FieldType.DOUBLE;
-import static ru.itmo.hasd.schema.FieldType.FLOAT;
-import static ru.itmo.hasd.schema.FieldType.INT;
-import static ru.itmo.hasd.schema.FieldType.LIST;
-import static ru.itmo.hasd.schema.FieldType.LONG;
-import static ru.itmo.hasd.schema.FieldType.MAP;
-import static ru.itmo.hasd.schema.FieldType.SCHEMA;
-import static ru.itmo.hasd.schema.FieldType.SET;
-import static ru.itmo.hasd.schema.FieldType.STRING;
 
 public class CustomDeserializer<T> implements Deserializer<T> {
-
-    private static final EnumSet<FieldType> NOT_OPERATED_FIELD_TYPES = EnumSet.of(STRING, SCHEMA, LIST, SET, MAP);
 
     @Override
     public T deserialize(Class<T> clazz, File file) throws IOException {
@@ -77,33 +63,20 @@ public class CustomDeserializer<T> implements Deserializer<T> {
 
     private void setFieldValue(Field field, T object, FieldType type, String value) {
         try {
-            if (NOT_OPERATED_FIELD_TYPES.contains(type)) {
-                field.set(object, value);
-                return;
-            }
+            switch (type) {
+                case INT -> field.set(object, Integer.parseInt(value));
+                case LONG -> field.set(object, Long.parseLong(value));
+                case FLOAT -> field.set(object, Float.parseFloat(value));
+                case DOUBLE -> field.set(object, Double.parseDouble(value));
+                case BOOL -> field.set(object, Boolean.parseBoolean(value));
+                case CHAR -> {
+                    if (value.length() > 1) {
+                        throw new IllegalArgumentException();
+                    }
 
-            if (type == INT) {
-                field.set(object, Integer.parseInt(value));
-                return;
-            }
-            if (type == DOUBLE) {
-                field.set(object, Double.parseDouble(value));
-                return;
-            }
-            if (type == FLOAT) {
-                field.set(object, Float.parseFloat(value));
-                return;
-            }
-            if (type == LONG) {
-                field.set(object, Long.parseLong(value));
-                return;
-            }
-            if (type == CHAR) {
-                if (value.length() > 1) {
-                    throw new IllegalArgumentException();
+                    field.set(object, value.charAt(0));
                 }
-
-                field.set(object, value.charAt(0));
+                default -> field.set(object, value);
             }
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));

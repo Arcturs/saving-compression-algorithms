@@ -28,15 +28,16 @@ public class CustomSerializer<T> implements Serializer<T> {
                 Arrays.stream(clazz.getDeclaredFields())
                         .map(field -> {
                             field.setAccessible(true);
+                            var fieldType = FieldType.fromField(field);
                             return new Field(
                                     field.getName(),
-                                    FieldType.fromField(field),
-                                    getFieldValue(field, value));
+                                    fieldType,
+                                    getFieldValue(field, value, fieldType));
                         })
                         .toList());
     }
 
-    private String getFieldValue(java.lang.reflect.Field field, T value) {
+    private String getFieldValue(java.lang.reflect.Field field, T value, FieldType fieldType) {
         try {
             return field.get(value).toString();
         } catch (IllegalAccessException e) {

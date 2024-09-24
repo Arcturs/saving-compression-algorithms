@@ -12,6 +12,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +39,7 @@ class CustomDeserializerTest {
                         field cash, type FLOAT, value 678097.06;
                         field name, type STRING, value Anna;
                         field gender, type CHAR, value f;
+                        field isEmployed, type BOOL, value false;
                         """,
                 StandardCharsets.UTF_8);
 
@@ -50,6 +52,7 @@ class CustomDeserializerTest {
         assertEquals(678097.06F, result.getCash());
         assertEquals("Anna", result.getName());
         assertEquals('f', result.getGender());
+        assertFalse(result.isEmployed());
     }
 
 }

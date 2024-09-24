@@ -45,8 +45,7 @@ public class CustomDeserializer<T> implements Deserializer<T> {
     private T processLine(String line, Class<T> clazz, T result) {
         try {
             if (line.startsWith("class ")) {
-                var className = line.substring("class ".length(), line.length() - 2);
-                return clazz.getDeclaredConstructor(String.class).newInstance(className);
+                return clazz.getDeclaredConstructor().newInstance();
             }
 
             if (line.startsWith("field ")) {
@@ -56,14 +55,14 @@ public class CustomDeserializer<T> implements Deserializer<T> {
                 setFieldValue(
                         field, result,
                         FieldType.fromName(tokens[1].trim().substring("type ".length())),
-                        tokens[2].trim().substring("value ".length(), tokens[2].trim().length() - 2));
+                        tokens[2].trim().substring("value ".length()));
                 return result;
             }
 
             throw new IllegalArgumentException("Неизвестный компонент схемы: " + line);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(
-                    "Произошла ошибка при десериализации поля %s, связанная с отсутствием поля в искомом классе %s"
+                    "Произошла ошибка при десериализации поля %s связанная с отсутствием поля в искомом классе %s"
                             .formatted(line, clazz.getSimpleName()));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Поле %s недоступно для редактирования".formatted(line));
@@ -84,23 +83,27 @@ public class CustomDeserializer<T> implements Deserializer<T> {
             }
 
             if (type == INT) {
-                field.setInt(object, Integer.parseInt(value));
+                field.set(object, Integer.parseInt(value));
+                return;
             }
             if (type == DOUBLE) {
-                field.setDouble(object, Double.parseDouble(value));
+                field.set(object, Double.parseDouble(value));
+                return;
             }
             if (type == FLOAT) {
-                field.setFloat(object, Float.parseFloat(value));
+                field.set(object, Float.parseFloat(value));
+                return;
             }
             if (type == LONG) {
-                field.setLong(object, Long.parseLong(value));
+                field.set(object, Long.parseLong(value));
+                return;
             }
             if (type == CHAR) {
                 if (value.length() > 1) {
                     throw new IllegalArgumentException();
                 }
 
-                field.setChar(object, value.charAt(0));
+                field.set(object, value.charAt(0));
             }
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));

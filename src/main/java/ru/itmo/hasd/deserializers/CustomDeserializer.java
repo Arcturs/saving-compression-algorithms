@@ -20,7 +20,6 @@ import static ru.itmo.hasd.schema.FieldType.SCHEMA;
 import static ru.itmo.hasd.schema.FieldType.SET;
 import static ru.itmo.hasd.schema.FieldType.STRING;
 
-// TODO: handle exceptions properly
 public class CustomDeserializer<T> implements Deserializer<T> {
 
     private static final EnumSet<FieldType> NOT_OPERATED_FIELD_TYPES = EnumSet.of(STRING, SCHEMA, LIST, SET, MAP);
@@ -46,11 +45,7 @@ public class CustomDeserializer<T> implements Deserializer<T> {
         try {
             if (line.startsWith("class ")) {
                 var className = line.substring("class ".length(), line.length() - 2);
-                try {
-                    return clazz.getDeclaredConstructor(String.class).newInstance(className);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                return clazz.getDeclaredConstructor(String.class).newInstance(className);
             }
 
             if (line.startsWith("field ")) {
@@ -64,11 +59,19 @@ public class CustomDeserializer<T> implements Deserializer<T> {
                 return result;
             }
 
-            // TODO: throw exception
-
-            return result;
+            throw new IllegalArgumentException("Неизвестный компонент схемы: " + line);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(
+                    "Произошла ошибка при десериализации поля %s, связанная с отсутствием поля в искомом классе %s"
+                            .formatted(line, clazz.getSimpleName()));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(line));
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(
+                    "Поля %s не существует в искомом классе %s"
+                            .formatted(line, clazz.getSimpleName()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Произошла ошибка при десериализации", e);
         }
     }
 
@@ -89,11 +92,21 @@ public class CustomDeserializer<T> implements Deserializer<T> {
                 field.setLong(object, Long.parseLong(value));
             }
             if (type == CHAR) {
-                // TODO: handle if string size > 1
+                if (value.length() > 1) {
+                    throw new IllegalArgumentException();
+                }
+
                 field.setChar(object, value.charAt(0));
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(
+                    "Произошла ошибка при попытке привести поле %s к типу %s"
+                            .formatted(field.getName(), type.name()));
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Произошла ошибка при десериализации", e);
         }
     }
 

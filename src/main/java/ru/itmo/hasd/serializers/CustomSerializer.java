@@ -40,7 +40,9 @@ public class CustomSerializer<T> implements Serializer<T> {
         try {
             return field.get(value).toString();
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+        } catch (Exception e) {
+            throw new RuntimeException("Произошла ошибка при сериализации", e);
         }
     }
 

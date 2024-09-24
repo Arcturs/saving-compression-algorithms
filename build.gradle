@@ -18,6 +18,16 @@ dependencies {
     implementation 'io.protostuff:protostuff-runtime:1.8.0'
     implementation 'org.apache.avro:avro:1.12.0'
     compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.0'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 group = 'ru.itmo.hasd'

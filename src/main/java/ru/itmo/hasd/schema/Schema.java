@@ -14,8 +14,7 @@ public record Schema(String name, List<Field> fields) {
                 .append(";\n");
 
         for (var field : fields) {
-            sb.append(field.toString())
-                    .append(";\n");
+            sb.append(field.toString()).append("\n");
         }
 
         return sb.toString();

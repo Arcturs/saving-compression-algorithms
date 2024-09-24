@@ -11,9 +11,9 @@ public class AvroDeserializer<T> implements Deserializer<T> {
 
     @Override
     public T deserialize(Class<T> clazz, File file) throws IOException {
-        DatumReader<T> reader = new ReflectDatumReader<T>(clazz);
+        DatumReader<T> reader = new ReflectDatumReader<>(clazz);
 
-        try (DataFileReader<T> in = new DataFileReader<T>(file, reader)) {
+        try (DataFileReader<T> in = new DataFileReader<>(file, reader)) {
             return in.next();
         }
     }

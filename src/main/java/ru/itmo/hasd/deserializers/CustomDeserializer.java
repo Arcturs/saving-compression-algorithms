@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.util.EnumSet;
 
 import static ru.itmo.hasd.schema.FieldType.CHAR;
+import static ru.itmo.hasd.schema.FieldType.DOUBLE;
 import static ru.itmo.hasd.schema.FieldType.FLOAT;
 import static ru.itmo.hasd.schema.FieldType.INT;
 import static ru.itmo.hasd.schema.FieldType.LIST;
@@ -50,7 +51,7 @@ public class CustomDeserializer<T> implements Deserializer<T> {
 
             if (line.startsWith("field ")) {
                 var tokens = line.split("[,;]");
-                var field = clazz.getField(tokens[0].trim().substring("field ".length()));
+                var field = clazz.getDeclaredField(tokens[0].trim().substring("field ".length()));
                 field.setAccessible(true);
                 setFieldValue(
                         field, result,
@@ -84,6 +85,9 @@ public class CustomDeserializer<T> implements Deserializer<T> {
 
             if (type == INT) {
                 field.setInt(object, Integer.parseInt(value));
+            }
+            if (type == DOUBLE) {
+                field.setDouble(object, Double.parseDouble(value));
             }
             if (type == FLOAT) {
                 field.setFloat(object, Float.parseFloat(value));

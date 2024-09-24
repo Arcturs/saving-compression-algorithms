@@ -14,9 +14,9 @@ public class AvroSerializer<T> implements Serializer<T> {
     @Override
     public void serialize(Class<T> clazz, T value, File file) throws IOException {
         var schema = ReflectData.get().getSchema(clazz);
-        DatumWriter<T> writer = new ReflectDatumWriter<T>(schema);
+        DatumWriter<T> writer = new ReflectDatumWriter<>(schema);
 
-        try (DataFileWriter<T> out = new DataFileWriter<T>(writer)) {
+        try (DataFileWriter<T> out = new DataFileWriter<>(writer)) {
             out.setCodec(CodecFactory.deflateCodec(9))
                     .create(schema, file);
             out.append(value);

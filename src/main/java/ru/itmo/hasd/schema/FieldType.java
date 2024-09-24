@@ -11,6 +11,7 @@ public enum FieldType {
     SCHEMA,
     INT,
     LONG,
+    DOUBLE,
     FLOAT,
     STRING,
     CHAR,
@@ -25,6 +26,10 @@ public enum FieldType {
 
         if (field.getType() == Long.class) {
             return LONG;
+        }
+
+        if (field.getType() == Double.class) {
+            return DOUBLE;
         }
 
         if (field.getType() == Float.class) {

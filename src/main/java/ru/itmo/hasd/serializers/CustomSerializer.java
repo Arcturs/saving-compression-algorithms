@@ -25,7 +25,7 @@ public class CustomSerializer<T> implements Serializer<T> {
     private Schema getSchema(Class<T> clazz, T value) {
         return new Schema(
                 clazz.getSimpleName(),
-                Arrays.stream(clazz.getFields())
+                Arrays.stream(clazz.getDeclaredFields())
                         .map(field -> {
                             field.setAccessible(true);
                             return new Field(

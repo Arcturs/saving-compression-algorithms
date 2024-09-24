@@ -10,6 +10,8 @@ import ru.itmo.hasd.model.Person;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,7 +27,7 @@ public class CustomSerializerTest {
 
     @Test
     @SneakyThrows
-    void serializeSuccessTest() {
+    void serializeObjectWithPrimitiveTypesSuccessTest() {
         var testFile = new File(temporaryFile, FILE_NAME);
         var person = new Person()
                 .setId(10001L)
@@ -50,6 +52,31 @@ public class CustomSerializerTest {
                 field name, type STRING, value Anna;
                 field gender, type CHAR, value f;
                 field isEmployed, type BOOL, value false;
+                """,
+                result
+        );
+    }
+
+    @Test
+    @SneakyThrows
+    void serializeObjectWithCollectionTypesSuccessTest() {
+        var testFile = new File(temporaryFile, FILE_NAME);
+        var person = new Person()
+                .setId(10002L)
+                .setHobbies(List.of("sport", "english"))
+                .setChildrenIds(Set.of(1, 2));
+
+        serializer.serialize(Person.class, person, testFile);
+
+        String result = FileUtils.readFileToString(testFile, StandardCharsets.UTF_8);
+        assertEquals(
+                """
+                class Person;
+                field id, type LONG, value 10002;
+                field cash, type FLOAT, value 0.0;
+                field isEmployed, type BOOL, value false;
+                field hobbies, type LIST, value-type STRING, values [sport || english];
+                field childrenIds, type LIST, value-type INT, values [1 || 2];
                 """,
                 result
         );

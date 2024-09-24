@@ -24,7 +24,7 @@ public record Schema(String name, List<Field> fields) {
      *
      * class ???;
      * field %s, type %s, value %s;
-     * field %s, type %s, values [%s, %s, ...]; - collection
+     * field %s, type %s, value-type %s, values [%s || %s || ...]; - collection
      * ...
      */
 

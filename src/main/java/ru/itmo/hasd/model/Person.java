@@ -3,16 +3,22 @@ package ru.itmo.hasd.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+import java.util.Set;
+
 @Data
 @Accessors(chain = true)
 public class Person {
 
     private long id;
-    private int age;
-    private double salary;
+    private Integer age;
+    private Double salary;
     private float cash;
     private String name;
-    private char gender;
+    private Character gender;
     private boolean isEmployed;
+
+    private List<String> hobbies;
+    private Set<Integer> childrenIds;
 
 }

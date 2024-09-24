@@ -1,10 +1,8 @@
 package ru.itmo.hasd.schema;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 public enum FieldType {
 
@@ -17,47 +15,42 @@ public enum FieldType {
     CHAR,
     BOOL,
     LIST,
-    SET,
     MAP;
 
-    public static FieldType fromField(Field field) {
-        if (field.getType() == Integer.class || field.getType() == int.class) {
+    public static FieldType fromClassType(Class<?> clazz) {
+        if (clazz == Integer.class || clazz == int.class) {
             return INT;
         }
 
-        if (field.getType() == Long.class || field.getType() == long.class) {
+        if (clazz == Long.class || clazz == long.class) {
             return LONG;
         }
 
-        if (field.getType() == Double.class || field.getType() == double.class) {
+        if (clazz == Double.class || clazz == double.class) {
             return DOUBLE;
         }
 
-        if (field.getType() == Float.class || field.getType() == float.class) {
+        if (clazz == Float.class || clazz == float.class) {
             return FLOAT;
         }
 
-        if (field.getType() == String.class) {
+        if (clazz == String.class) {
             return STRING;
         }
 
-        if (field.getType() == Character.class || field.getType() == char.class) {
+        if (clazz == Character.class || clazz == char.class) {
             return CHAR;
         }
 
-        if (field.getType() == Boolean.class || field.getType() == boolean.class) {
+        if (clazz == Boolean.class || clazz == boolean.class) {
             return BOOL;
         }
 
-        if (field.getType() == List.class || field.getType() == Arrays.class) {
+        if (Collection.class.isAssignableFrom(clazz)) {
             return LIST;
         }
 
-        if (field.getType() == Set.class) {
-            return SET;
-        }
-
-        if (field.getType() == Map.class) {
+        if (clazz == Map.class) {
             return MAP;
         }
 

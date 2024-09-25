@@ -1,6 +1,5 @@
 package ru.itmo.hasd.serializers;
 
-import org.apache.commons.lang3.tuple.Pair;
 import ru.itmo.hasd.schema.Field;
 import ru.itmo.hasd.schema.FieldType;
 import ru.itmo.hasd.schema.Schema;
@@ -10,13 +9,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static ru.itmo.hasd.constant.CommonConstants.ExceptionMessages.FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE;
+import static ru.itmo.hasd.constant.CommonConstants.ExceptionMessages.SERIALIZATION_EXCEPTION_MESSAGE;
+import static ru.itmo.hasd.constant.CommonConstants.SchemaParts.EMPTY_VALUES;
+import static ru.itmo.hasd.constant.CommonConstants.SchemaParts.ENTRY_DELIMITER;
+import static ru.itmo.hasd.constant.CommonConstants.SchemaParts.VALUES_DELIMITER;
 import static ru.itmo.hasd.schema.FieldType.LIST;
 import static ru.itmo.hasd.schema.FieldType.MAP;
 
@@ -93,9 +96,9 @@ public class CustomSerializer<T> implements Serializer<T> {
             }
             return fieldValue.toString();
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+            throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (Exception e) {
-            throw new RuntimeException("Произошла ошибка при сериализации", e);
+            throw new RuntimeException(SERIALIZATION_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -106,15 +109,15 @@ public class CustomSerializer<T> implements Serializer<T> {
                 return null;
             }
             if (collection.isEmpty()) {
-                return "[]";
+                return EMPTY_VALUES;
             }
             return collection.stream()
                     .map(Object::toString)
-                    .collect(Collectors.joining(" || ", "[", "]"));
+                    .collect(Collectors.joining(VALUES_DELIMITER, "[", "]"));
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+            throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (Exception e) {
-            throw new RuntimeException("Произошла ошибка при сериализации", e);
+            throw new RuntimeException(SERIALIZATION_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -125,16 +128,16 @@ public class CustomSerializer<T> implements Serializer<T> {
                 return null;
             }
             if (map.isEmpty()) {
-                return "[]";
+                return EMPTY_VALUES;
             }
             return map.entrySet()
                     .stream()
-                    .map(entry -> entry.getKey().toString() + "--" + entry.getValue().toString())
-                    .collect(Collectors.joining(" || ", "[", "]"));
+                    .map(entry -> entry.getKey().toString() + ENTRY_DELIMITER + entry.getValue().toString())
+                    .collect(Collectors.joining(VALUES_DELIMITER, "[", "]"));
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+            throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (Exception e) {
-            throw new RuntimeException("Произошла ошибка при сериализации", e);
+            throw new RuntimeException(SERIALIZATION_EXCEPTION_MESSAGE, e);
         }
     }
 

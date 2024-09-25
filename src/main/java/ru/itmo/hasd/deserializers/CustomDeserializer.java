@@ -8,7 +8,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
+import static ru.itmo.hasd.schema.FieldType.LIST;
+
+// TODO: prettify
 public class CustomDeserializer<T> implements Deserializer<T> {
 
     @Override
@@ -34,10 +43,22 @@ public class CustomDeserializer<T> implements Deserializer<T> {
                 return clazz.getDeclaredConstructor().newInstance();
             }
 
+            var tokens = line.split("[,;]");
+            var field = clazz.getDeclaredField(tokens[0].trim().substring("field ".length()));
+            field.setAccessible(true);
+            if (line.contains("value-type ")) {
+                var fieldType = FieldType.fromName(tokens[1].trim().substring("type ".length()));
+                if (fieldType != LIST) {
+                    throw new IllegalArgumentException("Указан неверный тип поля для коллекции для десериализации");
+                }
+                setFieldValues(
+                        field, result,
+                        FieldType.fromName(tokens[2].trim().substring("value-type ".length())),
+                        tokens[3].trim().substring("values [".length(), tokens[3].length() - 2));
+                return result;
+            }
+
             if (line.startsWith("field ")) {
-                var tokens = line.split("[,;]");
-                var field = clazz.getDeclaredField(tokens[0].trim().substring("field ".length()));
-                field.setAccessible(true);
                 setFieldValue(
                         field, result,
                         FieldType.fromName(tokens[1].trim().substring("type ".length())),
@@ -63,31 +84,63 @@ public class CustomDeserializer<T> implements Deserializer<T> {
 
     private void setFieldValue(Field field, T object, FieldType type, String value) {
         try {
-            switch (type) {
-                case INT -> field.set(object, Integer.parseInt(value));
-                case LONG -> field.set(object, Long.parseLong(value));
-                case FLOAT -> field.set(object, Float.parseFloat(value));
-                case DOUBLE -> field.set(object, Double.parseDouble(value));
-                case BOOL -> field.set(object, Boolean.parseBoolean(value));
-                case CHAR -> {
-                    if (value.length() > 1) {
-                        throw new IllegalArgumentException();
-                    }
-
-                    field.set(object, value.charAt(0));
-                }
-                default -> field.set(object, value);
-            }
+            var parsedValue = parseValueFromString(type, value);
+            field.set(object, parsedValue);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(
                     "Произошла ошибка при попытке привести поле %s к типу %s"
                             .formatted(field.getName(), type.name()));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException("Произошла ошибка при десериализации", e);
         }
+    }
+
+    private void setFieldValues(Field field, T object, FieldType valueFieldType, String value) {
+        try {
+            var elements = value.split(" \\|\\| ");
+            Collection<Object> deserializedElements = new ArrayList<>(elements.length);
+            for (var element : elements) {
+                deserializedElements.add(parseValueFromString(valueFieldType, element));
+            }
+            field.set(object, getCollection(field.getType(), deserializedElements));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(
+                    "Произошла ошибка при попытке привести поле %s к коллекции типа %s"
+                            .formatted(field.getName(), valueFieldType.name()));
+        } catch (Exception e) {
+            throw new RuntimeException("Произошла ошибка при десериализации", e);
+        }
+    }
+
+    private static Object parseValueFromString (FieldType fieldType, String value) {
+        return switch (fieldType) {
+            case INT -> Integer.parseInt(value);
+            case LONG -> Long.parseLong(value);
+            case FLOAT -> Float.parseFloat(value);
+            case DOUBLE -> Double.parseDouble(value);
+            case BOOL -> Boolean.parseBoolean(value);
+            case CHAR -> {
+                if (value.length() > 1) {
+                    throw new IllegalArgumentException();
+                }
+                yield value.charAt(0);
+            }
+            default -> value;
+        };
+    }
+
+    private static Collection<Object> getCollection(Class<?> collectionClass, Collection<Object> values) {
+        if (Set.class.isAssignableFrom(collectionClass)) {
+            return Set.copyOf(values);
+        }
+        if (Queue.class.isAssignableFrom(collectionClass)) {
+            return new LinkedList<>(values);
+        }
+        return List.copyOf(values);
     }
 
 }

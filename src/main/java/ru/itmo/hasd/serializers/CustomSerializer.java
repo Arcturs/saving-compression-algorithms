@@ -1,5 +1,6 @@
 package ru.itmo.hasd.serializers;
 
+import org.apache.commons.lang3.tuple.Pair;
 import ru.itmo.hasd.schema.Field;
 import ru.itmo.hasd.schema.FieldType;
 import ru.itmo.hasd.schema.Schema;
@@ -9,12 +10,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static ru.itmo.hasd.schema.FieldType.LIST;
+import static ru.itmo.hasd.schema.FieldType.MAP;
 
 public class CustomSerializer<T> implements Serializer<T> {
 
@@ -56,6 +60,20 @@ public class CustomSerializer<T> implements Serializer<T> {
                     .setValue(fieldValues);
         }
 
+        if (fieldType == MAP) {
+            var fieldValues = getFieldMapValues(field, value);
+            if (fieldValues == null) {
+                return null;
+            }
+            var fieldValuesType = (ParameterizedType) field.getGenericType();
+            return new Field()
+                    .setName(field.getName())
+                    .setType(fieldType)
+                    .setKeyType(FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[0]))
+                    .setValueType(FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[1]))
+                    .setValue(fieldValues);
+        }
+
         var fieldValue = getFieldValue(field, value);
         if (fieldValue == null) {
             return null;
@@ -92,6 +110,26 @@ public class CustomSerializer<T> implements Serializer<T> {
             }
             return collection.stream()
                     .map(Object::toString)
+                    .collect(Collectors.joining(" || ", "[", "]"));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+        } catch (Exception e) {
+            throw new RuntimeException("Произошла ошибка при сериализации", e);
+        }
+    }
+
+    private String getFieldMapValues(java.lang.reflect.Field field, T value) {
+        try {
+            var map = (Map<Object, Object>) field.get(value);
+            if (map == null) {
+                return null;
+            }
+            if (map.isEmpty()) {
+                return "[]";
+            }
+            return map.entrySet()
+                    .stream()
+                    .map(entry -> entry.getKey().toString() + "--" + entry.getValue().toString())
                     .collect(Collectors.joining(" || ", "[", "]"));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));

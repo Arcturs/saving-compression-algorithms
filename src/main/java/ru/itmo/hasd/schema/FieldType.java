@@ -50,7 +50,7 @@ public enum FieldType {
             return LIST;
         }
 
-        if (clazz == Map.class) {
+        if (Map.class.isAssignableFrom(clazz)) {
             return MAP;
         }
 

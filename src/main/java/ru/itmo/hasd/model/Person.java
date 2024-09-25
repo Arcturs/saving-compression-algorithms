@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -20,5 +21,7 @@ public class Person {
 
     private List<String> hobbies;
     private Set<Integer> childrenIds;
+
+    private Map<String, Long> luggage;
 
 }

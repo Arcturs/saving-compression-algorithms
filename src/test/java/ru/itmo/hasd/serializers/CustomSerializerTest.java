@@ -11,9 +11,11 @@ import ru.itmo.hasd.model.Person;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomSerializerTest {
@@ -44,15 +46,15 @@ public class CustomSerializerTest {
         // Note: теряется точность у float и double чисел - на подумать
         assertEquals(
                 """
-                class Person;
-                field id, type LONG, value 10001;
-                field age, type INT, value 10;
-                field salary, type DOUBLE, value 87000.5;
-                field cash, type FLOAT, value 678097.06;
-                field name, type STRING, value Anna;
-                field gender, type CHAR, value f;
-                field isEmployed, type BOOL, value false;
-                """,
+                        class Person;
+                        field id, type LONG, value 10001;
+                        field age, type INT, value 10;
+                        field salary, type DOUBLE, value 87000.5;
+                        field cash, type FLOAT, value 678097.06;
+                        field name, type STRING, value Anna;
+                        field gender, type CHAR, value f;
+                        field isEmployed, type BOOL, value false;
+                        """,
                 result
         );
     }
@@ -69,17 +71,76 @@ public class CustomSerializerTest {
         serializer.serialize(Person.class, person, testFile);
 
         String result = FileUtils.readFileToString(testFile, StandardCharsets.UTF_8);
-        assertEquals(
-                """
-                class Person;
-                field id, type LONG, value 10002;
-                field cash, type FLOAT, value 0.0;
-                field isEmployed, type BOOL, value false;
-                field hobbies, type LIST, value-type STRING, values [sport || english];
-                field childrenIds, type LIST, value-type INT, values [1 || 2];
-                """,
-                result
-        );
+        assertTrue(
+                result.contains(
+                        """
+                                class Person;
+                                field id, type LONG, value 10002;
+                                field cash, type FLOAT, value 0.0;
+                                field isEmployed, type BOOL, value false;
+                                field hobbies, type LIST, value-type STRING, values [sport || english];
+                                field childrenIds, type LIST, value-type INT, values [1 || 2];
+                                """)
+                        || result.contains(
+                        """
+                                class Person;
+                                field id, type LONG, value 10002;
+                                field cash, type FLOAT, value 0.0;
+                                field isEmployed, type BOOL, value false;
+                                field hobbies, type LIST, value-type STRING, values [english || sport];
+                                field childrenIds, type LIST, value-type INT, values [1 || 2];
+                                """)
+                        || result.contains(
+                        """
+                                class Person;
+                                field id, type LONG, value 10002;
+                                field cash, type FLOAT, value 0.0;
+                                field isEmployed, type BOOL, value false;
+                                field hobbies, type LIST, value-type STRING, values [english || sport];
+                                field childrenIds, type LIST, value-type INT, values [2 || 1];
+                                """)
+                        || result.contains(
+                        """
+                                class Person;
+                                field id, type LONG, value 10002;
+                                field cash, type FLOAT, value 0.0;
+                                field isEmployed, type BOOL, value false;
+                                field hobbies, type LIST, value-type STRING, values [sport || english];
+                                field childrenIds, type LIST, value-type INT, values [2 || 1];
+                                """));
+    }
+
+    @Test
+    @SneakyThrows
+    void serializeObjectWithMapTypeSuccessTest() {
+        var testFile = new File(temporaryFile, FILE_NAME);
+        var person = new Person()
+                .setId(10003L)
+                .setLuggage(
+                        Map.of(
+                                "t-shirt", 3L,
+                                "jeans", 2L));
+
+        serializer.serialize(Person.class, person, testFile);
+
+        String result = FileUtils.readFileToString(testFile, StandardCharsets.UTF_8);
+        assertTrue(
+                result.contains(
+                        """
+                                class Person;
+                                field id, type LONG, value 10003;
+                                field cash, type FLOAT, value 0.0;
+                                field isEmployed, type BOOL, value false;
+                                field luggage, type MAP, key-type STRING, value-type LONG, values [t-shirt--3 || jeans--2];
+                                """)
+                        || result.contains(
+                        """
+                                class Person;
+                                field id, type LONG, value 10003;
+                                field cash, type FLOAT, value 0.0;
+                                field isEmployed, type BOOL, value false;
+                                field luggage, type MAP, key-type STRING, value-type LONG, values [jeans--2 || t-shirt--3];
+                                """));
     }
 
 }

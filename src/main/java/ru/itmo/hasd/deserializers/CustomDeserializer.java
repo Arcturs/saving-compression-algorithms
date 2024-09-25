@@ -94,12 +94,15 @@ public class CustomDeserializer<T> implements Deserializer<T> {
 
             throw new IllegalArgumentException("Неизвестный компонент схемы: " + line);
         } catch (NoSuchMethodException | NoSuchFieldException e) {
+            result = null;
             throw new RuntimeException(
                     "Произошла ошибка при десериализации поля %s связанная с отсутствием поля в искомом классе %s"
                             .formatted(line, clazz.getSimpleName()));
         } catch (IllegalAccessException e) {
+            result = null;
             throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(line));
         } catch (Exception e) {
+            result = null;
             throw new RuntimeException(DESERIALIZATION_EXCEPTION_MESSAGE, e);
         }
     }
@@ -109,12 +112,15 @@ public class CustomDeserializer<T> implements Deserializer<T> {
             var parsedValue = parseValueFromString(type, value);
             field.set(object, parsedValue);
         } catch (IllegalAccessException e) {
+            object = null;
             throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (IllegalArgumentException e) {
+            object = null;
             throw new RuntimeException(
                     "Произошла ошибка при попытке привести поле %s к типу %s"
                             .formatted(field.getName(), type.name()));
         } catch (Exception e) {
+            object = null;
             throw new RuntimeException(DESERIALIZATION_EXCEPTION_MESSAGE, e);
         }
     }
@@ -128,12 +134,15 @@ public class CustomDeserializer<T> implements Deserializer<T> {
             }
             field.set(object, getCollection(field.getType(), deserializedElements));
         } catch (IllegalAccessException e) {
+            object = null;
             throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (IllegalArgumentException e) {
+            object = null;
             throw new RuntimeException(
                     "Произошла ошибка при попытке привести поле %s к коллекции типа %s"
                             .formatted(field.getName(), valueFieldType.name()));
         } catch (Exception e) {
+            object = null;
             throw new RuntimeException(DESERIALIZATION_EXCEPTION_MESSAGE, e);
         }
     }
@@ -155,12 +164,15 @@ public class CustomDeserializer<T> implements Deserializer<T> {
             }
             field.set(object, deserializedMap);
         } catch (IllegalAccessException e) {
+            object = null;
             throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (IllegalArgumentException e) {
+            object = null;
             throw new RuntimeException(
                     "Произошла ошибка при попытке привести поле %s к словарю типа %s"
                             .formatted(field.getName(), valueFieldType.name()));
         } catch (Exception e) {
+            object = null;
             throw new RuntimeException(DESERIALIZATION_EXCEPTION_MESSAGE, e);
         }
     }

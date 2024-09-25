@@ -11,6 +11,7 @@ import ru.itmo.hasd.model.Person;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -80,6 +81,33 @@ class CustomDeserializerTest {
         assertFalse(result.isEmployed());
         assertEquals(List.of("sport", "english"), result.getHobbies());
         assertEquals(Set.of(1, 2), result.getChildrenIds());
+    }
+
+    @Test
+    @SneakyThrows
+    void deserializeWithMapTypeSuccessTest() {
+        var testFile = new File(temporaryFile, FILE_NAME);
+        FileUtils.writeStringToFile(
+                testFile,
+                """
+                       class Person;
+                       field id, type LONG, value 10003;
+                       field cash, type FLOAT, value 0.0;
+                       field isEmployed, type BOOL, value false;
+                       field luggage, type MAP, key-type STRING, value-type LONG, values [t-shirt--3 || jeans--2];
+                       """,
+                StandardCharsets.UTF_8);
+
+        Person result = deserializer.deserialize(Person.class, testFile);
+
+        assertNotNull(result);
+        assertEquals(10003L, result.getId());
+        assertFalse(result.isEmployed());
+        assertEquals(
+                Map.of(
+                        "t-shirt", 3L,
+                        "jeans", 2L),
+                result.getLuggage());
     }
 
 }

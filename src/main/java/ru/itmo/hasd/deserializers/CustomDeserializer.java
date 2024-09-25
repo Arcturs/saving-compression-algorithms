@@ -10,12 +10,15 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
 import static ru.itmo.hasd.schema.FieldType.LIST;
+import static ru.itmo.hasd.schema.FieldType.MAP;
 
 // TODO: prettify
 public class CustomDeserializer<T> implements Deserializer<T> {
@@ -46,8 +49,21 @@ public class CustomDeserializer<T> implements Deserializer<T> {
             var tokens = line.split("[,;]");
             var field = clazz.getDeclaredField(tokens[0].trim().substring("field ".length()));
             field.setAccessible(true);
+            var fieldType = FieldType.fromName(tokens[1].trim().substring("type ".length()));
+
+            if (line.contains("key-type ")) {
+                if (fieldType != MAP) {
+                    throw new IllegalArgumentException("Указан неверный тип поля для словаря для десериализации");
+                }
+                setFieldMapValues(
+                        field, result,
+                        FieldType.fromName(tokens[2].trim().substring("key-type ".length())),
+                        FieldType.fromName(tokens[3].trim().substring("value-type ".length())),
+                        tokens[4].trim().substring("values [".length(), tokens[4].length() - 2));
+                return result;
+            }
+
             if (line.contains("value-type ")) {
-                var fieldType = FieldType.fromName(tokens[1].trim().substring("type ".length()));
                 if (fieldType != LIST) {
                     throw new IllegalArgumentException("Указан неверный тип поля для коллекции для десериализации");
                 }
@@ -60,8 +76,7 @@ public class CustomDeserializer<T> implements Deserializer<T> {
 
             if (line.startsWith("field ")) {
                 setFieldValue(
-                        field, result,
-                        FieldType.fromName(tokens[1].trim().substring("type ".length())),
+                        field, result, fieldType,
                         tokens[2].trim().substring("value ".length()));
                 return result;
             }
@@ -105,6 +120,33 @@ public class CustomDeserializer<T> implements Deserializer<T> {
                 deserializedElements.add(parseValueFromString(valueFieldType, element));
             }
             field.set(object, getCollection(field.getType(), deserializedElements));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(
+                    "Произошла ошибка при попытке привести поле %s к коллекции типа %s"
+                            .formatted(field.getName(), valueFieldType.name()));
+        } catch (Exception e) {
+            throw new RuntimeException("Произошла ошибка при десериализации", e);
+        }
+    }
+
+    private void setFieldMapValues(
+            Field field, T object,
+            FieldType keyFieldType,
+            FieldType valueFieldType,
+            String value) {
+
+        try {
+            var elements = value.split(" \\|\\| ");
+            Map<Object, Object> deserializedMap = new HashMap<>(elements.length);
+            for (var element : elements) {
+                var entry = element.split("--");
+                deserializedMap.put(
+                        parseValueFromString(keyFieldType, entry[0]),
+                        parseValueFromString(valueFieldType, entry[1]));
+            }
+            field.set(object, deserializedMap);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Поле %s недоступно для редактирования".formatted(field.getName()));
         } catch (IllegalArgumentException e) {

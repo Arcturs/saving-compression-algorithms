@@ -51,7 +51,7 @@ public class CustomSerializerTest {
                         field age, type INT, value 10;
                         field salary, type DOUBLE, value 87000.5;
                         field cash, type FLOAT, value 678097.06;
-                        field name, type STRING, value Anna;
+                        field name, type STRING, value QW5uYQ==;
                         field gender, type CHAR, value f;
                         field isEmployed, type BOOL, value false;
                         """,
@@ -78,7 +78,7 @@ public class CustomSerializerTest {
                                 field id, type LONG, value 10002;
                                 field cash, type FLOAT, value 0.0;
                                 field isEmployed, type BOOL, value false;
-                                field hobbies, type LIST, value-type STRING, values [sport || english];
+                                field hobbies, type LIST, value-type STRING, values [c3BvcnQ= || ZW5nbGlzaA==];
                                 field childrenIds, type LIST, value-type INT, values [1 || 2];
                                 """)
                         || result.contains(
@@ -87,7 +87,7 @@ public class CustomSerializerTest {
                                 field id, type LONG, value 10002;
                                 field cash, type FLOAT, value 0.0;
                                 field isEmployed, type BOOL, value false;
-                                field hobbies, type LIST, value-type STRING, values [english || sport];
+                                field hobbies, type LIST, value-type STRING, values [ZW5nbGlzaA== || c3BvcnQ=];
                                 field childrenIds, type LIST, value-type INT, values [1 || 2];
                                 """)
                         || result.contains(
@@ -96,7 +96,7 @@ public class CustomSerializerTest {
                                 field id, type LONG, value 10002;
                                 field cash, type FLOAT, value 0.0;
                                 field isEmployed, type BOOL, value false;
-                                field hobbies, type LIST, value-type STRING, values [english || sport];
+                                field hobbies, type LIST, value-type STRING, values [ZW5nbGlzaA== || c3BvcnQ=];
                                 field childrenIds, type LIST, value-type INT, values [2 || 1];
                                 """)
                         || result.contains(
@@ -105,7 +105,7 @@ public class CustomSerializerTest {
                                 field id, type LONG, value 10002;
                                 field cash, type FLOAT, value 0.0;
                                 field isEmployed, type BOOL, value false;
-                                field hobbies, type LIST, value-type STRING, values [sport || english];
+                                field hobbies, type LIST, value-type STRING, values [c3BvcnQ= || ZW5nbGlzaA==];
                                 field childrenIds, type LIST, value-type INT, values [2 || 1];
                                 """));
     }
@@ -131,7 +131,7 @@ public class CustomSerializerTest {
                                 field id, type LONG, value 10003;
                                 field cash, type FLOAT, value 0.0;
                                 field isEmployed, type BOOL, value false;
-                                field luggage, type MAP, key-type STRING, value-type LONG, values [t-shirt--3 || jeans--2];
+                                field luggage, type MAP, key-type STRING, value-type LONG, values [dC1zaGlydA==--3 || amVhbnM=--2];
                                 """)
                         || result.contains(
                         """
@@ -139,7 +139,7 @@ public class CustomSerializerTest {
                                 field id, type LONG, value 10003;
                                 field cash, type FLOAT, value 0.0;
                                 field isEmployed, type BOOL, value false;
-                                field luggage, type MAP, key-type STRING, value-type LONG, values [jeans--2 || t-shirt--3];
+                                field luggage, type MAP, key-type STRING, value-type LONG, values [amVhbnM=--2 || dC1zaGlydA==--3];
                                 """));
     }
 

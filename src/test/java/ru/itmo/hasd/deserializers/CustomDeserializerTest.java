@@ -40,7 +40,7 @@ class CustomDeserializerTest {
                         field age, type INT, value 10;
                         field salary, type DOUBLE, value 87000.5;
                         field cash, type FLOAT, value 678097.06;
-                        field name, type STRING, value Anna;
+                        field name, type STRING, value QW5uYQ==;
                         field gender, type CHAR, value f;
                         field isEmployed, type BOOL, value false;
                         """,
@@ -69,7 +69,7 @@ class CustomDeserializerTest {
                         field id, type LONG, value 10002;
                         field cash, type FLOAT, value 0.0;
                         field isEmployed, type BOOL, value false;
-                        field hobbies, type LIST, value-type STRING, values [sport || english];
+                        field hobbies, type LIST, value-type STRING, values [c3BvcnQ= || ZW5nbGlzaA==];
                         field childrenIds, type LIST, value-type INT, values [1 || 2];
                         """,
                 StandardCharsets.UTF_8);
@@ -94,7 +94,7 @@ class CustomDeserializerTest {
                        field id, type LONG, value 10003;
                        field cash, type FLOAT, value 0.0;
                        field isEmployed, type BOOL, value false;
-                       field luggage, type MAP, key-type STRING, value-type LONG, values [t-shirt--3 || jeans--2];
+                       field luggage, type MAP, key-type STRING, value-type LONG, values [dC1zaGlydA==--3 || amVhbnM=--2];
                        """,
                 StandardCharsets.UTF_8);
 

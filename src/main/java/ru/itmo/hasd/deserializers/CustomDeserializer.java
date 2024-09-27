@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,7 +32,6 @@ import static ru.itmo.hasd.constant.CommonConstants.SchemaParts.VALUE_TYPE;
 import static ru.itmo.hasd.schema.FieldType.LIST;
 import static ru.itmo.hasd.schema.FieldType.MAP;
 
-// TODO: prettify
 public class CustomDeserializer<T> implements Deserializer<T> {
 
     @Override
@@ -190,6 +190,7 @@ public class CustomDeserializer<T> implements Deserializer<T> {
                 }
                 yield value.charAt(0);
             }
+            case STRING -> new String(Base64.getDecoder().decode(value));
             default -> value;
         };
     }

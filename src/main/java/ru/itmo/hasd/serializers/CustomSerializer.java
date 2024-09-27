@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import static ru.itmo.hasd.constant.CommonConstants.SchemaParts.ENTRY_DELIMITER;
 import static ru.itmo.hasd.constant.CommonConstants.SchemaParts.VALUES_DELIMITER;
 import static ru.itmo.hasd.schema.FieldType.LIST;
 import static ru.itmo.hasd.schema.FieldType.MAP;
+import static ru.itmo.hasd.schema.FieldType.STRING;
 
 public class CustomSerializer<T> implements Serializer<T> {
 
@@ -51,33 +53,36 @@ public class CustomSerializer<T> implements Serializer<T> {
         var fieldType = FieldType.fromClassType(field.getType());
 
         if (fieldType == LIST) {
-            var fieldValues = getFieldValues(field, value);
+            var fieldValuesType = (ParameterizedType) field.getGenericType();
+            var valueType = FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[0]);
+            var fieldValues = getFieldValues(field, value, valueType);
             if (fieldValues == null) {
                 return null;
             }
-            var fieldValuesType = (ParameterizedType) field.getGenericType();
             return new Field()
                     .setName(field.getName())
                     .setType(fieldType)
-                    .setValueType(FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[0]))
+                    .setValueType(valueType)
                     .setValue(fieldValues);
         }
 
         if (fieldType == MAP) {
-            var fieldValues = getFieldMapValues(field, value);
+            var fieldValuesType = (ParameterizedType) field.getGenericType();
+            var keyType = FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[0]);
+            var valueType = FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[1]);
+            var fieldValues = getFieldMapValues(field, value, keyType, valueType);
             if (fieldValues == null) {
                 return null;
             }
-            var fieldValuesType = (ParameterizedType) field.getGenericType();
             return new Field()
                     .setName(field.getName())
                     .setType(fieldType)
-                    .setKeyType(FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[0]))
-                    .setValueType(FieldType.fromClassType((Class<?>) fieldValuesType.getActualTypeArguments()[1]))
+                    .setKeyType(keyType)
+                    .setValueType(valueType)
                     .setValue(fieldValues);
         }
 
-        var fieldValue = getFieldValue(field, value);
+        var fieldValue = getFieldValue(field, value, fieldType);
         if (fieldValue == null) {
             return null;
         }
@@ -88,13 +93,10 @@ public class CustomSerializer<T> implements Serializer<T> {
                 .setValue(fieldValue);
     }
 
-    private String getFieldValue(java.lang.reflect.Field field, T value) {
+    private String getFieldValue(java.lang.reflect.Field field, T value, FieldType fieldType) {
         try {
             var fieldValue = field.get(value);
-            if (fieldValue == null) {
-                return null;
-            }
-            return fieldValue.toString();
+            return encodeFieldValue(fieldValue, fieldType);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (Exception e) {
@@ -102,7 +104,7 @@ public class CustomSerializer<T> implements Serializer<T> {
         }
     }
 
-    private String getFieldValues(java.lang.reflect.Field field, T value) {
+    private String getFieldValues(java.lang.reflect.Field field, T value, FieldType valueType) {
         try {
             var collection = (Collection<Object>) field.get(value);
             if (collection == null) {
@@ -112,7 +114,7 @@ public class CustomSerializer<T> implements Serializer<T> {
                 return EMPTY_VALUES;
             }
             return collection.stream()
-                    .map(Object::toString)
+                    .map(it -> encodeFieldValue(it, valueType))
                     .collect(Collectors.joining(VALUES_DELIMITER, "[", "]"));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
@@ -121,7 +123,7 @@ public class CustomSerializer<T> implements Serializer<T> {
         }
     }
 
-    private String getFieldMapValues(java.lang.reflect.Field field, T value) {
+    private String getFieldMapValues(java.lang.reflect.Field field, T value, FieldType keyType, FieldType valueType) {
         try {
             var map = (Map<Object, Object>) field.get(value);
             if (map == null) {
@@ -132,13 +134,26 @@ public class CustomSerializer<T> implements Serializer<T> {
             }
             return map.entrySet()
                     .stream()
-                    .map(entry -> entry.getKey().toString() + ENTRY_DELIMITER + entry.getValue().toString())
+                    .map(entry -> encodeFieldValue(entry.getKey(), keyType)
+                            + ENTRY_DELIMITER
+                            + encodeFieldValue(entry.getValue(), valueType))
                     .collect(Collectors.joining(VALUES_DELIMITER, "[", "]"));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(FIELD_NOT_AVAILABLE_EXCEPTION_MESSAGE_TEMPLATE.formatted(field.getName()));
         } catch (Exception e) {
             throw new RuntimeException(SERIALIZATION_EXCEPTION_MESSAGE, e);
         }
+    }
+
+    private static String encodeFieldValue(Object value, FieldType fieldType) {
+        if (value == null) {
+            return null;
+        }
+        if (fieldType == STRING) {
+            return Base64.getEncoder()
+                    .encodeToString(value.toString().getBytes(StandardCharsets.UTF_8));
+        }
+        return value.toString();
     }
 
 }

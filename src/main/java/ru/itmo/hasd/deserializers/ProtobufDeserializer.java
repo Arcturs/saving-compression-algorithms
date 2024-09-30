@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 
 public class ProtobufDeserializer<T> implements Deserializer<T> {
@@ -17,7 +18,7 @@ public class ProtobufDeserializer<T> implements Deserializer<T> {
 
         try (var in = new ObjectInputStream(FileUtils.openInputStream(file))) {
             T value = schema.newMessage();
-            ProtostuffIOUtil.mergeFrom(in, value, schema);
+            ProtostuffIOUtil.mergeDelimitedFrom((InputStream) in, value, schema);
             return value;
         }
     }

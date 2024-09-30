@@ -16,11 +16,10 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static ru.itmo.hasd.util.CommonUtils.FILE_NAME;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomSerializerTest {
-
-    private static final String FILE_NAME = "test.bin";
 
     private final CustomSerializer<Person> serializer = new CustomSerializer<>();
 

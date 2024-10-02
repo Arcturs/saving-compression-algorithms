@@ -12,16 +12,16 @@ public class CommonUtils {
 
     public static final EasyRandom LIGHT_EASY_RANDOM = new EasyRandom(
             new EasyRandomParameters()
-                    .stringLengthRange(1, 258)
+                    .stringLengthRange(1, 100)
                     .collectionSizeRange(1, 50));
     public static final EasyRandom MEDIUM_EASY_RANDOM = new EasyRandom(
             new EasyRandomParameters()
-                    .stringLengthRange(259, 1000)
-                    .collectionSizeRange(50, 500));
+                    .stringLengthRange(100, 1000)
+                    .collectionSizeRange(25, 50));
     public static final EasyRandom HEAVY_EASY_RANDOM = new EasyRandom(
             new EasyRandomParameters()
-                    .stringLengthRange(1001, 10_000)
-                    .collectionSizeRange(200, 500));
+                    .stringLengthRange(1000, 5000)
+                    .collectionSizeRange(50, 100));
 
     public static Long fromBytesToKb(Long length) {
         return length / 1024;

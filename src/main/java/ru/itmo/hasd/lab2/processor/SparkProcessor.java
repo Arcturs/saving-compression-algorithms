@@ -11,14 +11,15 @@ import java.io.File;
 
 public class SparkProcessor {
 
-    public void process(FileWriter writer, File file, File newFile) {
+    public void process(FileWriter writer, File newFile) {
         var sparkSession = SparkConfig.getSparkSession();
-        Dataset<Row> names = sparkSession.read().json(file.getPath());
+        var file = new File("src/main/resources/test.csv");
+        Dataset<Row> names = sparkSession.read().csv(file.getAbsolutePath());
         Dataset<String> fullNames = names.map(
                 (MapFunction<Row, String>) row -> {
-                    var firstName = row.<String>getAs("firstName");
-                    var surname = row.<String>getAs("surname");
-                    return firstName + " " + surname;
+                    var firstName = row.<String>getAs("_c0");
+                    var lastName = row.<String>getAs("_c1");
+                    return firstName + " " + lastName;
                 },
                 Encoders.STRING());
         writer.write(fullNames, newFile);

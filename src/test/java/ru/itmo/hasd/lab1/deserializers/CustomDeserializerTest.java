@@ -17,7 +17,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static ru.itmo.hasd.lab1.util.CommonUtils.FILE_NAME;
+import static ru.itmo.hasd.util.CommonUtils.FILE_NAME;
 
 @ExtendWith(MockitoExtension.class)
 class CustomDeserializerTest {

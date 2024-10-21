@@ -21,7 +21,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     implementation 'org.apache.spark:spark-core_2.13:3.5.3'
-    compileOnly 'org.apache.spark:spark-sql_2.13:3.5.3'
+    implementation 'org.apache.spark:spark-sql_2.13:3.5.3'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -29,10 +29,29 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.0'
     testImplementation 'org.jeasy:easy-random-core:5.0.0'
     testImplementation 'org.slf4j:slf4j-nop:2.0.7'
+
+    testImplementation 'org.apache.spark:spark-sql_2.13:3.5.3'
 }
 
 test {
     useJUnitPlatform()
+
+    jvmArgs = [
+            "--add-opens=java.base/java.lang=ALL-UNNAMED",
+            "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+            "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
+            "--add-opens=java.base/java.io=ALL-UNNAMED",
+            "--add-opens=java.base/java.net=ALL-UNNAMED",
+            "--add-opens=java.base/java.nio=ALL-UNNAMED",
+            "--add-opens=java.base/java.util=ALL-UNNAMED",
+            "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+            "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+            "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+            "--add-opens=java.base/sun.nio.cs=ALL-UNNAMED",
+            "--add-opens=java.base/sun.security.action=ALL-UNNAMED",
+            "--add-opens=java.base/sun.util.calendar=ALL-UNNAMED",
+            "--add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED"
+            ]
 }
 
 group = 'ru.itmo.hasd'

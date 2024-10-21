@@ -1,4 +1,4 @@
-package ru.itmo.hasd.lab1.util;
+package ru.itmo.hasd.util;
 
 import lombok.experimental.UtilityClass;
 import org.jeasy.random.EasyRandom;
@@ -29,6 +29,10 @@ public class CommonUtils {
 
     public static Long fromBytesToMb(Long length) {
         return length / 1024 / 1024;
+    }
+
+    public static Long fromBytesToGb(Long length) {
+        return length / 1024 / 1024 / 1024;
     }
 
 }

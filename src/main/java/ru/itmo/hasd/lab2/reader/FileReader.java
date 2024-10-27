@@ -7,6 +7,6 @@ import java.io.File;
 
 public interface FileReader {
 
-    Dataset<Row> read(File file);
+    Dataset<Row> read(String path);
 
 }

@@ -3,3 +3,5 @@
  */
 
 rootProject.name = 'saving-compression-algorithms'
+
+// enableFeaturePreview("VERSION_CATALOGS")

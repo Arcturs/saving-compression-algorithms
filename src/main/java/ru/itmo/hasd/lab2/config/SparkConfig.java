@@ -8,7 +8,8 @@ public class SparkConfig {
 
     private static final SparkSession INSTANCE = SparkSession.builder()
             .appName("SparkTestApp")
-            .master("local")
+            .config("spark.jars", "build/libs/saving-compression-algorithms-1.0-SNAPSHOT.jar")
+            .master("spark://localhost:7077")
             .getOrCreate();
 
     public static SparkSession getSparkSession() {

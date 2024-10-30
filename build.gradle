@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.protobuf:protobuf-java:4.28.1'
-    implementation 'com.google.protobuf:protobuf-java-util:4.28.1'
+    implementation 'com.google.protobuf:protobuf-java:4.28.1' // для spark закомментировать
+    implementation 'com.google.protobuf:protobuf-java-util:4.28.1' // для spark закомментировать
     implementation 'io.protostuff:protostuff-core:1.8.0'
     implementation 'io.protostuff:protostuff-runtime:1.8.0'
     implementation 'org.apache.avro:avro:1.12.0'
@@ -24,7 +24,6 @@ dependencies {
     implementation 'org.apache.spark:spark-sql_2.12:3.2.4'
     implementation 'org.codehaus.janino:janino:3.0.16'
     implementation 'org.slf4j:slf4j-reload4j:2.0.16'
-    implementation 'org.apache.orc:orc-core:1.5.10'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'

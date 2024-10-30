@@ -1,7 +1,6 @@
 package ru.itmo.hasd.lab2;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,7 +18,6 @@ import java.io.File;
 import static ru.itmo.hasd.lab2.constants.Constants.BOOKS_DATA_FILE_PATH_FOR_TEST;
 import static ru.itmo.hasd.lab2.constants.Constants.BOOKS_RATING_FILE_PATH_FOR_TEST;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 public class SparkTest {
 
@@ -57,11 +55,11 @@ public class SparkTest {
         now = System.currentTimeMillis();
         parquetFileReader.read(PARQUET_FILE_PATH);
         var parquetFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из parquet файл: " + fromMsToSeconds(parquetFileReaderTime) + " с");
+        System.out.println("Время чтения из parquet файл: " + parquetFileReaderTime + " мс");
         now = System.currentTimeMillis();
         orcFileReader.read(ORC_FILE_PATH);
         var orcFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из orc файл: " + fromMsToSeconds(orcFileReaderTime) + " с");
+        System.out.println("Время чтения из orc файл: " + orcFileReaderTime + " мс");
     }
 
     @Test
@@ -87,11 +85,11 @@ public class SparkTest {
         now = System.currentTimeMillis();
         parquetFileReader.read(PARQUET_FILE_PATH);
         var parquetFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из parquet файл: " + fromMsToSeconds(parquetFileReaderTime) + " с");
+        System.out.println("Время чтения из parquet файл: " + parquetFileReaderTime + " мс");
         now = System.currentTimeMillis();
         orcFileReader.read(ORC_FILE_PATH);
         var orcFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из orc файл: " + fromMsToSeconds(orcFileReaderTime) + " с");
+        System.out.println("Время чтения из orc файл: " + orcFileReaderTime + " мс");
     }
 
     @Test
@@ -117,11 +115,11 @@ public class SparkTest {
         now = System.currentTimeMillis();
         parquetFileReader.read(PARQUET_FILE_PATH);
         var parquetFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из parquet файл: " + fromMsToSeconds(parquetFileReaderTime) + " с");
+        System.out.println("Время чтения из parquet файл: " + parquetFileReaderTime + " мс");
         now = System.currentTimeMillis();
         orcFileReader.read(ORC_FILE_PATH);
         var orcFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из orc файл: " + fromMsToSeconds(orcFileReaderTime) + " мс");
+        System.out.println("Время чтения из orc файл: " + orcFileReaderTime + " мс");
     }
 
     @Test
@@ -147,11 +145,11 @@ public class SparkTest {
         now = System.currentTimeMillis();
         parquetFileReader.read(PARQUET_FILE_PATH);
         var parquetFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из parquet файл: " + fromMsToSeconds(parquetFileReaderTime) + " с");
+        System.out.println("Время чтения из parquet файл: " + parquetFileReaderTime + " мс");
         now = System.currentTimeMillis();
         orcFileReader.read(ORC_FILE_PATH);
         var orcFileReaderTime = System.currentTimeMillis() - now;
-        System.out.println("Время чтения из orc файл: " + fromMsToSeconds(orcFileReaderTime) + " мс");
+        System.out.println("Время чтения из orc файл: " + orcFileReaderTime + " мс");
     }
 
     private static long fromBytesToMb(long bytes) {
@@ -162,8 +160,8 @@ public class SparkTest {
         return (double) bytes / 1024 / 1024 / 1024;
     }
 
-    private static long fromMsToSeconds(long ms) {
-        return ms / 1000;
+    private static double fromMsToSeconds(long ms) {
+        return (double) ms / 1000;
     }
 
 }

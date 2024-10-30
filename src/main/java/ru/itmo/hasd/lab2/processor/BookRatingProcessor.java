@@ -18,18 +18,18 @@ public class BookRatingProcessor {
                         DataTypes.createStructType(new StructField[]{
                                 DataTypes.createStructField("Id", DataTypes.StringType, true),
                                 DataTypes.createStructField("Title", DataTypes.StringType, true),
-                                DataTypes.createStructField("Price", DataTypes.StringType, true),
+                                DataTypes.createStructField("Price", DataTypes.DoubleType, true),
                                 DataTypes.createStructField("User_id", DataTypes.StringType, true),
                                 DataTypes.createStructField("profileName", DataTypes.StringType, true),
                                 DataTypes.createStructField("review/helpfulness", DataTypes.StringType, true),
-                                DataTypes.createStructField("review/score", DataTypes.StringType, true),
+                                DataTypes.createStructField("review/score", DataTypes.DoubleType, true),
                                 DataTypes.createStructField("review/time", DataTypes.StringType, true),
                                 DataTypes.createStructField("review/summary", DataTypes.StringType, true),
                                 DataTypes.createStructField("review/text", DataTypes.StringType, true)
                         }))
                 .csv(BOOKS_RATING_FILE_PATH);
         var ratingsCount = names.col("review/score");
-        names.withColumn("ratingsCount", when(ratingsCount.isNaN(), "0.0").otherwise(ratingsCount));
+        names.withColumn("ratingsCount", when(ratingsCount.isNaN(), "0.0").otherwise(ratingsCount.multiply(100)));
         return names;
     }
 

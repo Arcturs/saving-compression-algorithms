@@ -25,11 +25,11 @@ public class BookDataProcessor {
                                 DataTypes.createStructField("publishedDate", DataTypes.StringType, true),
                                 DataTypes.createStructField("infoLink", DataTypes.StringType, true),
                                 DataTypes.createStructField("categories", DataTypes.StringType, true),
-                                DataTypes.createStructField("ratingsCount", DataTypes.StringType, true)
+                                DataTypes.createStructField("ratingsCount", DataTypes.DoubleType, true)
                         }))
                 .csv(BOOKS_DATA_FILE_PATH);
         var ratingsCount = names.col("ratingsCount");
-        names.withColumn("ratingsCount", when(ratingsCount.isNaN(), "0.0").otherwise(ratingsCount));
+        names.withColumn("ratingsCount", when(ratingsCount.isNaN(), "0.0").otherwise(ratingsCount.multiply(100)));
         return names;
     }
 

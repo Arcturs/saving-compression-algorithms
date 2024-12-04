@@ -25,6 +25,8 @@ dependencies {
     implementation 'org.codehaus.janino:janino:3.0.16'
     implementation 'org.slf4j:slf4j-reload4j:2.0.16'
 
+    implementation 'com.ning:compress-lzf:1.1.2'
+
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'

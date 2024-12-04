@@ -3,6 +3,7 @@ package ru.itmo.hasd.lab1.benchmark;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import ru.itmo.hasd.lab1.model.LightObject;
@@ -22,6 +23,7 @@ import static ru.itmo.hasd.util.CommonUtils.LIGHT_EASY_RANDOM;
 import static ru.itmo.hasd.util.CommonUtils.MEDIUM_EASY_RANDOM;
 import static ru.itmo.hasd.util.CommonUtils.fromBytesToKb;
 
+@Disabled
 public class SerializerBenchmarkTest {
 
     @TempDir

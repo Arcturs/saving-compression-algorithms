@@ -55,3 +55,13 @@ services:
       - "./data/Books_rating.csv:/Users/a.sashina/IdeaProjects/saving-compression-algorithms/data/Books_rating.csv"
       - "./data/books_data.csv:/Users/a.sashina/IdeaProjects/saving-compression-algorithms/data/books_data.csv"
       - "/tmp/spark:/tmp/spark"
+
+  redisdb:
+    image: redis:7.4.1
+    ports:
+      - 6379:6379
+    volumes:
+      - redisdb_data:/data
+
+volumes:
+  redisdb_data:

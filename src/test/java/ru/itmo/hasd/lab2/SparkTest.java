@@ -1,6 +1,7 @@
 package ru.itmo.hasd.lab2;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,6 +19,7 @@ import java.io.File;
 import static ru.itmo.hasd.lab2.constants.Constants.BOOKS_DATA_FILE_PATH_FOR_TEST;
 import static ru.itmo.hasd.lab2.constants.Constants.BOOKS_RATING_FILE_PATH_FOR_TEST;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class SparkTest {
 

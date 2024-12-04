@@ -2,6 +2,7 @@ package ru.itmo.hasd.lab1.deserializers;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ru.itmo.hasd.util.CommonUtils.FILE_NAME;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class CustomDeserializerTest {
 

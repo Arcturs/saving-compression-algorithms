@@ -61,7 +61,4 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - redisdb_data:/data
-
-volumes:
-  redisdb_data:
+      - /tmp/redisdb_data:/data

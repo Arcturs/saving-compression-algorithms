@@ -48,35 +48,15 @@ public class RdbReader {
         return readSignedByte() & 0xff;
     }
 
-    private int readSignedByte() throws IOException {
-        if (!buffer.hasRemaining()) {
-            fillBuffer();
-        }
-        return buffer.get();
+    public byte[] readExpireTimeInSeconds() throws IOException {
+        return readBytes(4);
     }
 
-    private byte[] readBytes(int numBytes) throws IOException {
-        int remaining = numBytes;
-        int position = 0;
-        byte[] bytes = new byte[numBytes];
-
-        while (remaining > 0) {
-            int available = buffer.remaining();
-            if (available >= remaining) {
-                buffer.get(bytes, position, remaining);
-                position += remaining;
-                remaining = 0;
-            } else {
-                buffer.get(bytes, position, available);
-                position += available;
-                remaining -= available;
-                fillBuffer();
-            }
-        }
-        return bytes;
+    public byte[] readExpireTimeInMs() throws IOException {
+        return readBytes(8);
     }
 
-    private int getEncodedLength() throws IOException {
+    public int getEncodedLength() throws IOException {
         int firstByte = readSpecialByte();
         int flag = (firstByte & 0xc0) >> 6; // Определяем первые 2 бита для определения длины value
         int leftSixBits = firstByte & 0x3f;
@@ -115,14 +95,41 @@ public class RdbReader {
         };
     }
 
-    private byte[] decodeLzfString() throws IOException {
-        int clen = getEncodedLength();
-        int ulen = getEncodedLength();
+    private int readSignedByte() throws IOException {
+        if (!buffer.hasRemaining()) {
+            fillBuffer();
+        }
+        return buffer.get();
+    }
 
-        byte[] src = readBytes(clen);
-        byte[] dest = new byte[ulen];
-        LZFDecoder.decode(src, dest);
-        return dest;
+    public byte[] readBytes(int numBytes) throws IOException {
+        int remaining = numBytes;
+        int position = 0;
+        byte[] bytes = new byte[numBytes];
+
+        while (remaining > 0) {
+            int available = buffer.remaining();
+            if (available >= remaining) {
+                buffer.get(bytes, position, remaining);
+                position += remaining;
+                remaining = 0;
+            } else {
+                buffer.get(bytes, position, available);
+                position += available;
+                remaining -= available;
+                fillBuffer();
+            }
+        }
+        return bytes;
+    }
+
+    private byte[] decodeLzfString() throws IOException {
+        int sourceLength = getEncodedLength();
+        int destinationLength = getEncodedLength();
+        byte[] source = readBytes(sourceLength);
+        byte[] destination = new byte[destinationLength];
+        LZFDecoder.decode(source, destination);
+        return destination;
     }
 
 }

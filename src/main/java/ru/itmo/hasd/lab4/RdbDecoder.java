@@ -86,7 +86,7 @@ public class RdbDecoder {
         var dbHashTableSize = rdbReader.getEncodedLength();
         var expiryHashTableSize = rdbReader.getEncodedLength();
         result.append(
-                "Размер хэш таблицы БД: %s, Размер expiry хэш таблицы: %s \n"
+                "Размер хэш таблицы БД: %s, Размер expire хэш таблицы: %s \n"
                         .formatted(dbHashTableSize, expiryHashTableSize));
     }
 

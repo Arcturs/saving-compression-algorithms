@@ -65,7 +65,7 @@ public class RdbReader {
 
     private int getEncodedLength(int flag, int leftSixBits) throws IOException {
         return switch (flag) {
-            case 0, 3 -> leftSixBits; // оставшиеся 6 битов
+            case 0 -> leftSixBits; // оставшиеся 6 битов
             case 1 -> (readSpecialByte() & 0xff) | (leftSixBits << 8); // 1 специальный байт + 6 оставшиеся бита
             case 2 -> {
                 byte[] bs = readBytes(4); // 6 оставшихся битов пропускаются, 4 следующих байта

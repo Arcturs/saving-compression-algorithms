@@ -45,9 +45,8 @@ public class LoudsTree {
                     return PART_CONTAINS;
                 }
                 return search(select0(charIndex), chars, ++wordOffset);
-            } else {
-                index++;
             }
+            index++;
             charIndex++;
         }
         return NOT_FOUND;

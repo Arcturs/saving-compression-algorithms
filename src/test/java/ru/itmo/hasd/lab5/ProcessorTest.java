@@ -31,25 +31,25 @@ class ProcessorTest {
         System.out.printf("Объем памяти исходного текста: %s Кб\n", file.length() / 1024);
         System.out.printf(
                 "Объем памяти LOUDS структуры: %s Кб\n",
-                (loudsTree.getLBS().size() / 8 + loudsTree.getLabels().size()) / 1024);
+                (loudsTree.getLBS().size() / 8 + loudsTree.getLabels().size() + loudsTree.getIsLeaf().size() / 8) / 1024);
 
         var fileLzf = new File(this.file, "lzf.txt");
         processor.createLzfFile(SMALL_TXT_PATH, fileLzf.getPath());
         System.out.printf("Объем памяти текста с сжатием LZF: %s Кб\n", fileLzf.length() / 1024);
 
         var start = System.currentTimeMillis();
-        var resultLoads = loudsTree.match("ve");
+        var resultLoads = loudsTree.match("vein");
         var timeLoads = System.currentTimeMillis() - start;
 
         var fileIndex = new File(this.file, "index0.txt");
         var scanner = processor.createFileIndex(SMALL_TXT_PATH, fileIndex.getPath());
         start = System.currentTimeMillis();
-        scanner.findAll("ve*")
+        scanner.findAll("vein*")
                 .map(MatchResult::group)
                 .toList();
         var timeScanner = System.currentTimeMillis() - start;
         System.out.printf("""
-                        Поиск содержания паттерна "ve"
+                        Поиск содержания паттерна "vein"
                         Результат: :%s
                         [LOUDS] Время поиска: %s мс
                         [Scanner] Время поиска: %s мс
@@ -69,25 +69,25 @@ class ProcessorTest {
         System.out.printf("Объем памяти исходного текста: %s Кб\n", file.length() / 1024);
         System.out.printf(
                 "Объем памяти LOUDS структуры: %s Кб\n",
-                (loudsTree.getLBS().size() / 8 + loudsTree.getLabels().size()) / 1024);
+                (loudsTree.getLBS().size() / 8 + loudsTree.getLabels().size() + loudsTree.getIsLeaf().size() / 8) / 1024);
 
         var fileLzf = new File(this.file, "lzf.txt");
         var f = processor.createLzfFile(MEDIUM_TXT_PATH, fileLzf.getAbsolutePath());
         System.out.printf("Объем памяти текста с сжатием LZF: %s Кб\n", f.length() / 1024);
 
         var start = System.currentTimeMillis();
-        var resultLoads = loudsTree.match("ve");
+        var resultLoads = loudsTree.match("vein");
         var timeLoads = System.currentTimeMillis() - start;
 
         start = System.currentTimeMillis();
         var fileIndex0 = new File(this.file, "index0.txt");
         var scanner = processor.createFileIndex(MEDIUM_TXT_PATH, fileIndex0.getPath());
-        scanner.findAll("ve*")
+        scanner.findAll("vein*")
                 .map(MatchResult::group)
                 .toList();
         var timeScanner = System.currentTimeMillis() - start;
         System.out.printf("""
-                        Поиск содержания паттерна "ve"
+                        Поиск содержания паттерна "vein"
                         Результат: :%s
                         [LOUDS] Время поиска: %s мс
                         [Scanner] Время поиска: %s мс
@@ -107,25 +107,25 @@ class ProcessorTest {
         System.out.printf("Объем памяти исходного текста: %s Кб\n", file.length() / 1024);
         System.out.printf(
                 "Объем памяти LOUDS структуры: %s Кб\n",
-                (loudsTree.getLBS().size() / 8 + loudsTree.getLabels().size()) / 1024);
+                (loudsTree.getLBS().size() / 8 + loudsTree.getLabels().size() + loudsTree.getIsLeaf().size() / 8) / 1024);
 
         var fileLzf = new File(this.file, "lzf.txt");
         processor.createLzfFile(BIG_TXT_PATH, fileLzf.getAbsolutePath());
         System.out.printf("Объем памяти текста с сжатием LZF: %s Кб\n", fileLzf.length() / 1024);
 
         var start = System.currentTimeMillis();
-        var resultLoads = loudsTree.match("ve");
+        var resultLoads = loudsTree.match("vein");
         var timeLoads = System.currentTimeMillis() - start;
 
         var fileIndex = new File(this.file, "index0.txt");
         var scanner = processor.createFileIndex(BIG_TXT_PATH, fileIndex.getPath());
         start = System.currentTimeMillis();
-        scanner.findAll("ve*")
+        scanner.findAll("vein*")
                 .map(MatchResult::group)
                 .toList();
         var timeScanner = System.currentTimeMillis() - start;
         System.out.printf("""
-                        Поиск содержания паттерна "ve"
+                        Поиск содержания паттерна "vein"
                         Результат: :%s
                         [LOUDS] Время поиска: %s мс
                         [Scanner] Время поиска: %s мс

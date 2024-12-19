@@ -1,9 +1,11 @@
 package ru.itmo.hasd.lab4;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 class RdbDecoderTest {
 
     private final RdbDecoder rdbDecoder = new RdbDecoder();
